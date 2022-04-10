@@ -28,7 +28,8 @@ client.on("message", (message) => {
   let data = dataList;
   let cleanArr = message.content.split(" ");
   let msg = cleanArr[0];
-  if (msg[0] === ".") {
+  if (msg[0] === prefix) {
+    // this makes sure that we dont have to check for command if the message doesnt start with the prefix
     switch (command) {
       case "زق":
         message.reply(message.author.displayAvatarURL());
@@ -43,7 +44,6 @@ client.on("message", (message) => {
         ComplementInArabic(data, message, true);
         break;
       case "مساعدة":
-        //message.reply("مني مساعدك انقلع");
         message.reply(
           "هذولي الاشياء اللي اقدر اسويهن:\n.اضف (مدحة/سبة) (مدحة أو سبة)\n.سب (@ شخص او محد اذا تبينن بس اسب)\n.امدح (@ شخص او محد اذا كنت تبينن امدحك انت)"
         );
@@ -71,6 +71,7 @@ client.on("message", (message) => {
 });
 
 function addToData(message) {
+  // true and false in the params indicate whether its in Arabic or English
   let cleanMsg = message.content.split(" ");
 
   switch (cleanMsg[1]) {
@@ -216,6 +217,7 @@ function insultInArabic(data, message) {
     return;
   }
   if (member) {
+    // someone is @'d
     if (client.user.id == member.id) {
       message.reply("مسوي طقطوقي ؟ انقلع ولا يكثر");
       return;
