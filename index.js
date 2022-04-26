@@ -51,7 +51,7 @@ client.on("message", (message) => {
       case "insult":
         InsultInEnglish(data, message);
         break;
-      case "complement":
+      case "compliment":
         ComplementInArabic(data, message, false);
         break;
       case "add":
@@ -60,7 +60,7 @@ client.on("message", (message) => {
       case "help":
         console.log("here");
         message.reply(
-          "List of commands:\n.add [insult or complement] [your insult/complement]\n.insult [either @ someone or leave it empty and i will scream into the void]\n.complement [either @ someone or leave it empty if you want me to complement you]"
+          "List of commands:\n.add [insult or compliment] [your insult/compliment]\n.insult [either @ someone or leave it empty and i will scream into the void]\n.compliment [either @ someone or leave it empty if you want me to compliment you]"
         );
         break;
       default:
@@ -89,7 +89,7 @@ function addToData(message) {
       addInsult(cleanMsg, false);
       message.react("✅");
       break;
-    case "complement":
+    case "compliment":
       addComplement(cleanMsg, false);
       message.react("✅");
       break;
