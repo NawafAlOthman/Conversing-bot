@@ -310,15 +310,20 @@ function ComplementInArabic(data, message, mode) {
 function addFrog(message) {
   let newPic = "";
   let cleanMsg = message.content.split(" ");
-  const attachment = message.attachments.first();
-  const url = attachment ? attachment.url : null;
-  if (cleanMsg.length == 3 || url) {
+  const attachment = message.attachments;
+
+  // const url = attachment ? attachment.url : null;
+  if (cleanMsg.length == 3 || attachment) {
     fs.readFile("./data.json", "utf-8", function (err, data) {
       if (err) throw err;
 
       let tempData = JSON.parse(data);
-      if (url) {
-        tempData.FrogPics.push(url);
+      if (attachment) {
+        attachment.forEach((pic) => {
+          console.log("url === ", pic.url);
+          tempData.FrogPics.push(pic.url);
+        });
+        //tempData.FrogPics.push(url);
       } else {
         tempData.FrogPics.push(cleanMsg[2]);
       }
@@ -342,7 +347,6 @@ function addFrog(message) {
 
 // if the user message includes the word "frog" reply with a frog emoji
 function frog(message, data) {
-  console.log(message.author.id);
   if (message.content.includes("frog") && message.author.id != botId) {
     random = Math.floor(Math.random() * data.Complements.length);
     message.channel.send(data.FrogPics[random]);
