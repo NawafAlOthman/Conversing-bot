@@ -7,7 +7,7 @@ require("dotenv").config({ path: path.resolve(__dirname, ".env") }); // allows a
 const TOKEN = process.env.TOKEN;
 let nawafId = process.env.NAWAF_ID;
 let botId = process.env.BOT_ID;
-
+let emID = process.env.EM_ID;
 const prefix = ".";
 let i = 1;
 
@@ -28,6 +28,8 @@ client.on("message", (message) => {
   let data = dataList;
   let cleanArr = message.content.split(" ");
   let msg = cleanArr[0];
+  let addFlag = false;
+
   if (msg[0] === prefix) {
     // this makes sure that we dont have to check for command if the message doesnt start with the prefix
     switch (command) {
@@ -56,6 +58,7 @@ client.on("message", (message) => {
         break;
       case "add":
         addToData(message);
+        addFlag = true;
         break;
       case "help":
         console.log("here");
@@ -68,6 +71,10 @@ client.on("message", (message) => {
         break;
     }
   }
+  if (!addFlag) {
+    frog(message, data);
+  }
+  addFlag = false;
 });
 
 function addToData(message) {
@@ -92,6 +99,16 @@ function addToData(message) {
     case "compliment":
       addComplement(cleanMsg, false);
       message.react("✅");
+      break;
+    case "frog":
+      if (message.author.id === emID || message.author.id === nawafId) {
+        addFrog(message);
+        // react with a frog emoji
+        message.react("🐸");
+      } else {
+        message.reply("you are not a member of the Frog fan club");
+        message.react("❌");
+      }
       break;
     default:
       break;
@@ -287,6 +304,48 @@ function ComplementInArabic(data, message, mode) {
       random = Math.floor(Math.random() * data.Complements.length);
       message.reply(data.Complements[random]);
     }
+  }
+}
+
+function addFrog(message) {
+  let newPic = "";
+  let cleanMsg = message.content.split(" ");
+  const attachment = message.attachments.first();
+  const url = attachment ? attachment.url : null;
+  if (cleanMsg.length == 3 || url) {
+    fs.readFile("./data.json", "utf-8", function (err, data) {
+      if (err) throw err;
+
+      let tempData = JSON.parse(data);
+      if (url) {
+        tempData.FrogPics.push(url);
+      } else {
+        tempData.FrogPics.push(cleanMsg[2]);
+      }
+      dataList = tempData;
+      console.log("frog pics == ", tempData);
+
+      fs.writeFile(
+        "./data.json",
+        JSON.stringify(tempData),
+        "utf-8",
+        function (err) {
+          if (err) throw err;
+          console.log("Done!");
+        }
+      );
+    });
+  } else {
+    console.log("formatting failed");
+  }
+}
+
+// if the user message includes the word "frog" reply with a frog emoji
+function frog(message, data) {
+  console.log(message.author.id);
+  if (message.content.includes("frog") && message.author.id != botId) {
+    random = Math.floor(Math.random() * data.Complements.length);
+    message.channel.send(data.FrogPics[random]);
   }
 }
 
