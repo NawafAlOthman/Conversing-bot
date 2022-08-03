@@ -340,15 +340,18 @@ function addFrog(message) {
         }
       );
     });
+    message.react("🐸");
   } else {
     console.log("formatting failed");
   }
 }
 
-// if the user message includes the word "frog" reply with a frog emoji
 function frog(message, data) {
-  if (message.content.includes("frog") && message.author.id != botId) {
-    random = Math.floor(Math.random() * data.Complements.length);
+  // make sure the message content is all lowercase
+  let cleanMsg = message.content.toLowerCase();
+  if (cleanMsg.includes("frog") && message.author.id != botId) {
+    random = Math.floor(Math.random() * data.FrogPics.length);
+    console.log("random == ", random);
     message.channel.send(data.FrogPics[random]);
   }
 }
